@@ -54,3 +54,21 @@ Follow the steps for your specific system all the way up to having installed Rai
 If you did not install RubyMine, but still wish to, you can follow the link below this line. Just log in with your JetBrains credentials and download it for free:
 
 https://www.jetbrains.com/ruby/promo/?gclid=CjwKCAjwzvX7BRAeEiwAsXExoxwQlLse8C3ll7BnBb5O54LiAW-2PT_ROQ3skOHt3u6QSkEKoaXpnxoCtWwQAvD_BwE
+
+### Step 2: Starting our project and navigating the directories
+
+Now that we have Ruby, Rails and a suitable text editor, we can start by setting our own directories and subsuequently navigate the directories from Ruby on Rails as well.
+
+- First use the terminal to navigate to the directory you want to store your project in.
+- Once there, use the following command to generate the main files for your project:
+
+```
+rails new yourProjectName
+```
+
+I suggest you use a name like rubyBlog, blogger, or something that will remind you what the project was all about in a few weeks ;) 
+
+Now, let's move on to setting up our repository online and connecting it to this directory. Go to your own github and make a new repository, but do not initialize it with a README.md.
+
+Next, navigate into your new Rails project and initialize your git using the ```git init ``` command.
+
