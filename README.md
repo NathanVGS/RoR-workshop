@@ -140,4 +140,15 @@ gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.7'
 ```
+You can see they are included with the prefix 'gem', written between quotations themselves and optionally followed by their version number. This is one way you will find gems on the internet; if you include them like this and then run your 'Bundle' tool in your terminal, you will install that gem! Easy, right? We'll install a few gems in just a moment.
 
+#### Starting our livehost
+
+This is a very simple step: much like Php, Rails and Ruby also have a virtual server hosting tool, which you can start up with the following command:
+
+```
+rails s 
+# or 
+rails server
+```
+This will, by default, open up a live server on https://localhost:3000
