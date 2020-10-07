@@ -142,13 +142,54 @@ gem 'jbuilder', '~> 2.7'
 ```
 You can see they are included with the prefix 'gem', written between quotations themselves and optionally followed by their version number. This is one way you will find gems on the internet; if you include them like this and then run your 'Bundle' tool in your terminal, you will install that gem! Easy, right? We'll install a few gems in just a moment.
 
-#### Starting our livehost
+#### Starting our localhost
 
-This is a very simple step: much like Php, Rails and Ruby also have a virtual server hosting tool, which you can start up with the following command:
+This is a very simple step: much like Php, Rails and Ruby also have a virtual server hosting tool. You can start it up with the following terminal command, while in the directory of your project:
 
 ```
 rails s 
 # or 
 rails server
 ```
-This will, by default, open up a live server on https://localhost:3000
+This will, by default, open up a live server on http://localhost:3000
+
+Go check it out, and you should see the following screen: 
+
+![rails](https://miro.medium.com/max/1158/1*JySSF6zbdXr-XJ30sWw00Q.png)
+
+In case you have an error, this might be because you do not have SQLite3 installed (when on Windows). If this is the case, follow the following link and make sure you check the box to *configure your environment variables*. Once this is done, restart your system, start your server up again and try loading the page again.
+
+That's all we'll need for now, let's get cracking with the actual code now!
+
+### Step 3: Starting up our first models
+
+Now, let us start by showcasing the power of a framework like Rails. In Rails, there is a concept called 'scaffolding'. This would generally translate to 'stellingen' or 'een stelling', and is a metaphor for something, but for what?
+
+Let's try generating the scaffolding for our blog articles. Open up your terminal and type:
+
+```
+rails generate scaffolding Article title:string body:text
+```
+
+Execute that and... Tada! Wait, what just happened?
+
+Rails went and did some of the boring and tedious coding work for you by creating a lot of different files and directories for your new Article model. In your terminal, you see this:
+
+```
+ invoke  resource_route
+       route    resources :smurves
+      invoke  scaffold_controller
+      create    app/controllers/smurves_controller.rb
+      invoke    erb
+      create      app/views/smurves
+      create      app/views/smurves/index.html.erb
+      create      app/views/smurves/edit.html.erb
+      create      app/views/smurves/show.html.erb
+      create      app/views/smurves/new.html.erb
+      create      app/views/smurves/_form.html.erb
+
+``` 
+Going over these lines, you can see snippets like 'create app/models/smurf.rb', 'create app/controllers/smurves_controller.rb' , 'create app/views/smurves...'. Those are the three main parts of our MVC design pattern, just right there for you already!
+
+Let's open up the article_controller in our directory and see what it looks like:
+
