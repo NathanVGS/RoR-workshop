@@ -19,7 +19,7 @@ In this workshop, I would like to guide you through the first steps of learning 
 
 For Lamarr, all of this should remind you very much of Symfony. For Giertz, I will try to help you as much as I can where needed, but will always try to supply enough documentation for you to find your way as well.
 
-### Step 1: Install Ruby and Rails
+### Step 1: Install Ruby and Rails (10 minutes)
 
 #### Installing Ruby
 
@@ -42,3 +42,15 @@ For us Linux/Ubuntu users, i'll include the very simple terminal command you wil
 ```
 $ sudo apt-get install ruby-full
 ```
+
+#### Installing Rails
+
+Next up, we need to install Rails itself, as it will allow us to generate a plethora of things that have been prebuilt for us, which will help us set up our own weblog without much difficulty. For that, I will also include a link to an external source:
+
+http://guides.railsgirls.com/install
+
+Follow the steps for your specific system all the way up to having installed Rails. You do not need to install any text editors anymore, since you either decided to install RubyMine or chose to work with your own editor of choice. 
+
+If you did not install RubyMine, but still wish to, you can follow the link below this line. Just log in with your JetBrains credentials and download it for free:
+
+https://www.jetbrains.com/ruby/promo/?gclid=CjwKCAjwzvX7BRAeEiwAsXExoxwQlLse8C3ll7BnBb5O54LiAW-2PT_ROQ3skOHt3u6QSkEKoaXpnxoCtWwQAvD_BwE
