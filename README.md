@@ -77,14 +77,20 @@ Next, navigate into your new Rails project and initialize your git using the ```
 Having done this, you would follow this with your usual git push, but first we need to set up our remote repository still. You do this using the usual SSH key along with the following command 
 
 ```
-$ git remote add origin remote yourSSHkey
+$ git remote add origin yourSSHkey
 # Sets the new remote
 $ git remote -v
 # Verifies the new remote URL
 ```
 If all goes well, that last command will return the URL of the repository that has been linked to.
 
-Now we can finish it up by using the usual ``` git push origin master ``` command, and we're ready to go!
+Now we can finish it up by setting up our upstream branch by adding something to the usual ``` git push origin master ``` command:
+
+```
+    git push --set-upstream origin master
+```
+
+And we're ready to go!
 
 #### Navigating the files in Rails
 
@@ -96,24 +102,25 @@ Once open, you should see something similar to this:
 
 Let's go over them one by one!
 
-- app - This is where almost all of our own code an effort will go. This will contain all the subfolders for your different models, controllers and views, all usually separated over their respective object directories. In addition, this also holds the /assets directory where you will store your images and your stylesheets, and also has the javascript directory for all your scripts and packages that you wish to install on top of it.
+- `app` - This is where almost all of our own code an effort will go. This will contain all the subfolders for your different models, controllers and views, all usually separated over their respective object directories. In addition, this also holds the /assets directory where you will store your images and your stylesheets, and also has the javascript directory for all your scripts and packages that you wish to install on top of it.
 
-- bin - This is where your app’s executables are stored: bundle, rails, rake, and spring. We will not be going into this directory manually, only through the bundles that we want to use for other purposes.
+- `bin` - This is where your app’s executables are stored: bundle, rails, rake, and spring. We will not be going into this directory manually, only through the bundles that we want to use for other purposes.
 
-- config - Control the environment settings for your application. Important for this project and any other is the 'routes.rb' file, which will determine the pathing and routing for our eventual website. More on that later.
+- `config` - Control the environment settings for your application. Important for this project and any other is the 'routes.rb' file, which will determine the pathing and routing for our eventual website. More on that later.
 
-- db - Will eventually have a migrations subfolder where your migrations, used to structure the database, will be stored. When using SQLite3, as is the Rails default, the database file will also be stored in this folder.
+- `db` - Will eventually have a migrations subfolder where your migrations, used to structure the database, will be stored. When using SQLite3, as is the Rails default, the database file will also be stored in this folder.
 
-lib - This folder is to store code you control that is reusable outside the project. I have yet to use this myself as I am just starting to grasp Rails as well
+- `lib` - This folder is to store code you control that is reusable outside the project. I have yet to use this myself as I am just starting to grasp Rails as well
 
-log - Contains logs for your development and deployment, but to me personally this is all still Chinese and I do not know how to read them
+- `log` - Contains logs for your development and deployment, but to me personally this is all still Chinese and I do not know how to read them
 
-public - For those familiar with Symfony, this is where you would expect your views and your index, and although this used to be the case, it has all moved up to the app folder since Rails 3.1.
+- `public` - For those familiar with Symfony, this is where you would expect your views and your index, and although this used to be the case, it has all moved up to the app folder since Rails 3.1.
 
-test - Only applicable if your using the default Test::Unit testing library, but we will not explore that in this workshop.
-tmp - Stores our temporary cached files
+- `test` - Only applicable if your using the default Test::Unit testing library, but we will not explore that in this workshop.
 
-vendor - Infrequently used, this folder is to store code you do not control. With Bundler and Rubygems, we generally don’t need anything in here during development.
+- `tmp` - Stores our temporary cached files
+
+- `vendor` - Infrequently used, this folder is to store code you do not control. With Bundler and Rubygems, we generally don’t need anything in here during development.
 
 Outside of the directories, we see some other files with various extensions. One that we have already talked about briefly is included here too: the Gemfile
 
@@ -163,12 +170,14 @@ That's all we'll need for now, let's get cracking with the actual code now!
 
 ### Step 3: Starting up our first models
 
+#### The scaffolding magic
+
 Now, let us start by showcasing the power of a framework like Rails. In Rails, there is a concept called 'scaffolding'. This would generally translate to 'stellingen' or 'een stelling', and is a metaphor for something, but for what?
 
 Let's try generating the scaffolding for our blog articles. Open up your terminal and type:
 
 ```
-rails generate scaffolding Article title:string body:text
+rails generate scaffold Article title:string body:text
 ```
 
 Execute that and... Tada! Wait, what just happened?
@@ -191,5 +200,25 @@ Rails went and did some of the boring and tedious coding work for you by creatin
 ``` 
 Going over these lines, you can see snippets like 'create app/models/smurf.rb', 'create app/controllers/smurves_controller.rb' , 'create app/views/smurves...'. Those are the three main parts of our MVC design pattern, just right there for you already!
 
-Let's open up the article_controller in our directory and see what it looks like:
+#### The RESTful Actions in action
 
+Let's open up the article_controller in our directory and see what it looks like. You can find it under `./app/controllers/articles_controller.rb`.
+
+At first glance, you can see that there is a lot going on already. But if you look closely, you can see that Rails went along and made all the necessary actions or methods for a typical RESTful setup: `index`, `show`, `new`, `edit`, `create`, `update` and `destroy`.
+
+Take a look at the index action.
+
+```
+ # GET /articles
+ # GET /articles.json
+def index
+  @articles = Article.all
+end 
+```
+The first two lines are comments which indicate at what route you can access this page. If you add `/articles` to your http://localhost:3000, you should arrive at this page. But before we try that, let's go over the actual action.
+
+We open up de action or function with the def keyword and call it index, which is important since Rails will be able to identify and connect the index route `/articles` to this. This falls in the 'Convention-over-Configuration' principle, which comes down to only deviating from convention if necessary. We could call this homepage, but then we would also have to go and configure our routing ourselves. That sounds like too much work, right?
+
+Inside the method, we declare the instance variable `@articles` which will be equal to all instances known of an `Article` object. For this, Rails will go and call upon your database and look for all datasets that correspond to our model. Maybe you should try and open up this path and see what happens? navigate to http://localhost:3000/articles.
+
+![migration](./migration_error.png) 
