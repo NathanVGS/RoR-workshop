@@ -222,3 +222,28 @@ We open up de action or function with the def keyword and call it index, which i
 Inside the method, we declare the instance variable `@articles` which will be equal to all instances known of an `Article` object. For this, Rails will go and call upon your database and look for all datasets that correspond to our model. Maybe you should try and open up this path and see what happens? navigate to http://localhost:3000/articles.
 
 ![migration](./migration_error.png) 
+
+If you read closely, it says that our database still has no clue of this model even existing, or what it is built from. It says we still need to run a migration, but what is that all about? You can find that in the `db` directory, with a timestamped name and something like 'create_articles' in it. Open it up and you'll see:
+```
+class CreateArticles < ActiveRecord::Migration[6.0]
+  def change
+    create_table :articles do |t|
+      t.string :title
+      t.text :body
+
+      t.timestamps
+    end
+  end
+end
+```
+
+If you go back to our scaffolding statement, you can see that we added `title:string body:text`. These are the properties of our model that we need at the minimum: a title in the string format, and a body of our article which will take the text type. These are added here in the `change` action where you see the articles table is created with those rows in it. and at the bottom, you see that timestamps are added by default, which will be the `created_at` and `updated_at` properties.
+
+Now that makes some sense out of the code, let's run the migration so that our database is set up. You can do this by running the console command `rails db:migrate` which will run all migrations present in your code.
+
+Go back to your browser and try opening http://localhost:3000/articles again. Now it should work!
+
+#### SQLite3 Database
+
+But where is our database, how can we see what is stored? For now, no articles have been created yet, so none are stored in there either. That's also hy nothing is displayed yet, and you only see the title and body headers and the option to add an article.
+
