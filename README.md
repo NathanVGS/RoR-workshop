@@ -243,7 +243,7 @@ Now that makes some sense out of the code, let's run the migration so that our d
 
 Go back to your browser and try opening http://localhost:3000/articles again. Now it should work! Now Rails knows what table is related to the `Article` model and what properties it has.
 
-#### SQLite3 Database, the console interface & Routes
+### Step 4: SQLite3 Database, the console interface & Routes
 
 But where is our database, how can we see what is stored? For now, no articles have been created yet, so none are stored in there either. That's also hy nothing is displayed yet, and you only see the title and body headers and the option to add an article.
 
@@ -288,7 +288,7 @@ You will have to get back to this when creating your comments, which will includ
 ```
 This parameter will now specify to what our `/` route will lead. In this case, we will redirect to the `index` action of our ArticleController, and load all available articles in our database. 
 
-#### The Views and the create/update forms
+### Step 5: The Views and the create/update forms
 
 We've taken a look at the controller and the routes for our index page, and we've seen that the scaffolding created a whole lot more for the other RESTful actions, but we have yet to take a look at the view files that were also created.
 
@@ -337,12 +337,50 @@ Once on this page, you should see a very simple form that asks for a title and a
 
 Wait does it really just say `<%= render 'form', article: @article %>`? What does that mean? With the `render` keyword, you can open up specific view files within an action in your controller, or when used within a view, you can also open *partial* view files, which will then be loaded within that view file. You could render a form partial in your `new.html.erb` for example. But why would you do that? Well, if you open up your `update.html.erb`, you'll see that it's rendered there as well. This practice is specifically intended to avoid code repetition!
 
-so in `<%= render 'form', article: @article %>`, we see that the `app/views/_form.html.erb` will be loaded with the variable `article` that is set to the instance variable `@article`. But what is that one equal to now? For that we need to open up our `app/controllers/articles_controller.rb` and look at the `new` action:
+so in `<%= render 'form', article: @article %>`, we see that the `app/views/_form.html.erb` will be loaded with the variable `article` that is set to the instance variable `@article`. We'd expect that we'd need to look at the `new` action in the controller to see what happens, but in reality it's the `create` action where the magic happens. Take a look at that:
 ```
-  # GET /articles/new
-  def new
-    @article = Article.new
+  def create
+    @article = Article.new(article_params)
+{...}
   end
   ```
-  We see that @article in this case is set to `Article.new`, or in other words an empty article object, just like we did in our console interface earlier on. This one will then be passed to the form, in which we will collect the correct inputs to then to applied to this article object.
+  
+ We see here that the instance variable is set to `Article.new`, but it is passed the `article_params` variable. This variable is defined a bit lower in our controller, and is a special layer of filtering what exactly gets passed to the controller through `GET` or `POST` requests. Specifically, for those familiar with Php, it is similar to the `$_REQUEST` array. In this particular case, the parameters allowed are `:title` and `:body`, which you can see below:
+```
+def article_params
+  params.require(:article).permit(:title, :body)
+end
+``` 
+Let's take a look at the form partial and see where we can identify these parameters and where they will be saved. Can you see anything that reminds you of these?  
+```
+ <div class="field">
+    <%= form.label :title %>
+    <%= form.text_field :title %>
+  </div>
+
+  <div class="field">
+    <%= form.label :body %>
+    <%= form.text_area :body %>
+  </div>
+  ``` 
+  The two blocks of code above are what will be the input fields in which the values for the `params` hash will be identified. Important is that the names for the *symbols* you use here are exactly the same as the one specified in the `params` action, or they will not be recognized. In short, when submitted, the params hash will be passed to the controller in the following format: `:article => { :title => “test”, :body => “this is a test”}`. This is passed as a parameter for `Article.new` and an article is created. 
+
+That article still needs to be saved to our database though with `Article.save`. This is done further down in the create action:
+```
+respond_to do |format|
+      if @article.save
+        format.html { redirect_to @article, notice: 'Article was successfully created.' }
+        format.json { render :show, status: :created, location: @article }
+      else
+        format.html { render :new }
+        format.json { render json: @article.errors, status: :unprocessable_entity }
+      end
+    end
+```
+Look how here `respond_to` will be executed on a succesful request. You see that there are two available formats for our output, in both html and json, but we do not need to pay attention to that for now. Some of you might have seen that a `notice` is passed to the .html, which is what we saw a `<p>` field for in our other views. You can see here that a success message is passed to it in case of a succesful save.
+
+Now I think we've gone over quite some functionality of the gritty code, that's why I'd like to take a break from this to let it settle and go over some frontend options for a RoR project.
+
+### Step 6: The layouts, RubyGems and our own partials
+
 
