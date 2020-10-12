@@ -241,9 +241,89 @@ If you go back to our scaffolding statement, you can see that we added `title:st
 
 Now that makes some sense out of the code, let's run the migration so that our database is set up. You can do this by running the console command `rails db:migrate` which will run all migrations present in your code.
 
-Go back to your browser and try opening http://localhost:3000/articles again. Now it should work!
+Go back to your browser and try opening http://localhost:3000/articles again. Now it should work! Now Rails knows what table is related to the `Article` model and what properties it has.
 
-#### SQLite3 Database
+#### SQLite3 Database, the console interface & Routes
 
 But where is our database, how can we see what is stored? For now, no articles have been created yet, so none are stored in there either. That's also hy nothing is displayed yet, and you only see the title and body headers and the option to add an article.
+
+One option to look at your database, which is especially useful in development, is through Ruby's command line interface or console. Start it up by typing `rails console` in your terminal. Once open, try typing the following commands:
+```
+Article.all
+Time.now
+Article.new
+``` 
+Notice how the first command returns an empty array, and how the last returns an object array with all values set to `nil`. If you call `Article.all` again now, does it show up? 
+
+It doesn't, since we didn't explicitly decide to save the object, with the `.save` method. Let's make a real Article object, and save it:
+```
+a = Article.new
+a.title = 'Sample title'
+a.body = 'This is the sample body of the article'
+a.save
+Article.all
+```
+Now you see that we have actually saved a first test article. Load up your http://localhost:3000/articles again and you should see it right there!
+
+
+##### Routes and how they are set up
+
+It's a bit stupid that we always have to add the `/articles` path and that we still have that Rails template homepage, so let's go about changing that and have a look at how Rails does the routing. Open up the `config/routes.rb` file and have a look at what's there:
+
+```
+Rails.application.routes.draw do
+  resources :articles
+  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+end
+```
+
+Remember those RESTful actions we have talked about? Well in Rails, the Resource routing allows you to quickly declare all of the common routes for a given resourceful controller. Instead of declaring separate routes for your index, show, new, edit, create, update and destroy actions, a resourceful route declares them in a single line of code.
+
+For each object you declare as `resources :object`, Rails will scan the corresponding controller for all the RESTful actions and will create the routes for them. It will scan your directories for the correct ones under controller & views and link them up!
+
+You will have to get back to this when creating your comments, which will include a special case of nesting your routes, but for now we will only still get rid of the silly Rails homepage by adding a `root` parameter and the route we want. Above our resources line, add the following:
+
+``` 
+  root 'articles#index'
+```
+This parameter will now specify to what our `/` route will lead. In this case, we will redirect to the `index` action of our ArticleController, and load all available articles in our database. 
+
+#### The Views and the create/update forms
+
+We've taken a look at the controller and the routes for our index page, and we've seen that the scaffolding created a whole lot more for the other RESTful actions, but we have yet to take a look at the view files that were also created.
+
+Under `app/views/articles`, you will see a whole lot of generated view files in the`.html.erb` format. Open up the index.html.erb file, and we will go over what we see there.
+
+```
+<p id="notice"><%= notice %></p>
+
+<h1>Articles</h1>
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Body</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @articles.each do |article| %>
+      <tr>
+        <td><%= article.title %></td>
+        <td><%= article.body %></td>
+        <td><%= link_to 'Show', article %></td>
+        <td><%= link_to 'Edit', edit_article_path(article) %></td>
+        <td><%= link_to 'Destroy', article, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<br>
+
+<%= link_to 'New Article', new_article_path %>
+```
+
+So the first line of code we see, is a <p> block with our first embedded ruby block stating ` <%= notice %> `
+
 
