@@ -324,6 +324,25 @@ Under `app/views/articles`, you will see a whole lot of generated view files in 
 <%= link_to 'New Article', new_article_path %>
 ```
 
-So the first line of code we see, is a <p> block with our first embedded ruby block stating ` <%= notice %> `
+So the first line of code we see, is a <p> block with our first embedded ruby block stating ` <%= notice %> `. As you see here, the ERB blocks are opened and closes with a `<%` and `%>`, but what is the equals sign `=` doing there? Well in ERB, if you do not have the `<%=` equals sign, then the code block will be hidden. If it is there, everything that comes in between the ERB block will be output to your webpage. In this case, if there is a notice parameter, then it will be displayed. 
+What could the use be for this line? This line is used to add flash messages that can confirm certain actions or pop up errors. We will see more on those further in. 
 
+A bit below, we see the start of the table with a `<thead>`, and below we see the `<tbody>` being opened and another erb statement. But this time, it is not output to the webpage; it is kept hidden. We see the `@articles` return, from our index action in the controller. Remember what it did there? It called `Article.all` and stored it in this variable. So in reality, we have an array with objects in it, on which we can call the usual property methods, which is done right here. We open up a `.each`, and for each article, we will create a table row and output the title and body, along with 3 links that will redirect to other pages or actions concerning this article. Those links follow the `link_to` format which takes a string first that will be shown as the link, and then a route parameter and optional methods to be called on there.  In that way, we create a show, edit and destroy link for each article.
+
+At the bottom we see yet another `link_to`, this time to create a new article. If we click that one, we'll get redirected to http://localhost:3000/articles/new, let's go there!
+
+##### Forms and partials
+
+Once on this page, you should see a very simple form that asks for a title and a body; all the properties we asked for in an article. But how does this look like in the view? find it under `app/views/new`. 
+
+Wait does it really just say `<%= render 'form', article: @article %>`? What does that mean? With the `render` keyword, you can open up specific view files within an action in your controller, or when used within a view, you can also open *partial* view files, which will then be loaded within that view file. You could render a form partial in your `new.html.erb` for example. But why would you do that? Well, if you open up your `update.html.erb`, you'll see that it's rendered there as well. This practice is specifically intended to avoid code repetition!
+
+so in `<%= render 'form', article: @article %>`, we see that the `app/views/_form.html.erb` will be loaded with the variable `article` that is set to the instance variable `@article`. But what is that one equal to now? For that we need to open up our `app/controllers/articles_controller.rb` and look at the `new` action:
+```
+  # GET /articles/new
+  def new
+    @article = Article.new
+  end
+  ```
+  We see that @article in this case is set to `Article.new`, or in other words an empty article object, just like we did in our console interface earlier on. This one will then be passed to the form, in which we will collect the correct inputs to then to applied to this article object.
 
