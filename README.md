@@ -383,4 +383,40 @@ Now I think we've gone over quite some functionality of the gritty code, that's 
 
 ### Step 6: The layouts, RubyGems and our own partials
 
+#### The layout
+
+So now we've seen what Rails can do for us backend geeks, but web development really is all about that full stack. Because, let's face it, nobody would want to visit our blog with this kind of look. 
+
+We've seen the view files with their `.html.erb` extension, which behave like any other HTML file: you can add classes, ids, styleblocks and what not. But where do we keep our CSS files, and where is the `<html>` or `<body>` tag? And what about if we want to add a footer and a header to each page? For that last part, we need to learn about `layout` files, which you can find under `app/views/layouts`, and open up our `application.html.erb` file there:
+```
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>BlogTest</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <%= yield %>
+  </body>
+</html>
+``` 
+There's our DOCTYPE and all the other essentials! But what is this file exactly? In short, this is the framework for all of your view files to be loaded in; whatever view we access through our controllers, will be loaded inside this file's `<body>` tag. More specifically, you can see the ERB tag `<%= yield %>` in between there. So that means, if we want to add a footer or header, we can just do that in this file and it will be loaded everywhere! 
+
+Let's try that out by adding a footer with 'BeCode.org © 2020' in it, and the BeCode logo that you can find in this repository. But where do we save that image? Well, if you remember our file structure, then you know that there is the `assets` directory under `/app` which contains the `images` directory. Save it there, and we'll use Rails magic to call upon it in our views!
+
+Once it's saved there and you made our footer, let us forget about the standard `<img>` tag and use the rails `<%=image_tag("imagename.extension")%>`. This bad boy will always look in your `assets/images` folder for any reference you make, so no need to go and add a complex path to our `src` in a basic image tag!
+
+Load up our page, and we see our image. Only, it's quite big for my liking... That we can also fix, by adding properties to our `image_tag`. We can opt to add a class, like `<%=image_tag("Flower.jpg", :class => 'image_style')%>` and then add styling in our stylesheet, or we can opt to add the style property itself like `<%=image_tag("Flower.jpg", :style => 'max-width: 5%; height: auto')%>` and style inline. If you add the last option right now, it should turn out OK, especially for a backend person like me.
+
+I'd suggest you make your own header now, and maybe try to add your own image to it as well with the tricks we've learned. For those that want to add some more functionality to it, maybe consider adding some `link_to` tags like we saw on our `index.html.erb` file. Maybe one that redirects to our home page, and one for adding a new article?
+
+Lastly, you can also consider making partials out of your footer and header files, to keep them more cleanly separated. If you add all your respective code to partial files in your `layouts` directory, you can render them with the following erb tag in your main layout file: `<%= render 'layouts/filename' %>`. 
+
+Don't forget to add the underscore at the start of your partial file!
+
 
