@@ -419,4 +419,29 @@ Lastly, you can also consider making partials out of your footer and header file
 
 Don't forget to add the underscore at the start of your partial file!
 
+#### The CSS files
 
+In a minute I want to guide you through adding Bootstrap to our project so you can go ahead and add some nice, basic styling to our pages on the go. But if you're a true frontender, or you prefer doing all the hard work yourself (because if you want something done, you are best doing it yourself), you also need to know where to find the CSS files. 
+
+Navigate our directories again to that same `assets` directory and this time open `assets/stylesheets`. Here you'll find a few files. First of all we've got the `application.scss` file, which just like our `application.html.erb` will form the base of your ultimately compiled file of all other present stylesheets. Notice that these files automatically come in the SCSS format; Rails is generated with the `gem 'sass-rails', '>= 6'` gem which allows SCSS formatting without any configuration.
+
+In this 'mother' file, you can add styling too, and it will end up at the bottom of the compiled file. If you remember CSS rules, that means they will override any other stylings applied above them. This directory also holds stylesheets for your generated models, which will add styling to those respective views.
+
+#### RubyGems & Bootstrap
+
+But let's now go on to our best friend in being lazy about styling, and that's Bootstrap! In general, we would go about installing Bootstrap using the CDN or downloading it locally and referring to it in our `head` tag, but with Rails, we can use the handy package manager `gem` for this!
+
+Go to https://rubygems.com/ and search for bootstrap in the search bar, and follow one of the possible installation routes. If you opt to add it to your gemfile directly, remember to run `bundle install` in your terminal afterwards. **And in any case, after installing a gem it is recommended to restart your server in your terminal as well**. Do this by pressing `ctrl + C` and then typing `rails s` again.
+
+follow the documentation in the following link for setting up the bootstrap gem after installing: 
+https://www.rubydoc.info/gems/bootstrap/4.5.2
+
+##### Styling assignment
+
+Once you have added all this, I want to give you a small styling assignment:
+
+- Use bootstrap to form a grid of cards on your index page which show all the blog posts you have made
+- Style the show page so that the article is nicely shown in the middle and there is a clear separation with the background
+- Go nuts with your own additions! Remember that you also have a header and a footer that can use a bit of styling
+
+### 
