@@ -442,6 +442,7 @@ Once you have added all this, I want to give you a small styling assignment:
 
 - Use bootstrap to form a grid of cards on your index page which show all the blog posts you have made
 - Style the show page so that the article is nicely shown in the middle and there is a clear separation with the background
+- Go back to our form partial `_form.html.erb` and add the basic bootstrap styling there.
 - Go nuts with your own additions! Remember that you also have a header and a footer that can use a bit of styling
 
 ### 
