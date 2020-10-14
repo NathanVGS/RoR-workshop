@@ -379,6 +379,25 @@ respond_to do |format|
 ```
 Look how here `respond_to` will be executed on a succesful request. You see that there are two available formats for our output, in both html and json, but we do not need to pay attention to that for now. Some of you might have seen that a `notice` is passed to the .html, which is what we saw a `<p>` field for in our other views. You can see here that a success message is passed to it in case of a succesful save.
 
+#### forms and form helpers
+
+I can hear you thinking: how the hell is the form exactly the same for both the `create` and `update` actions, and how does it know what one to call upon? This is all through the **form helpers** used, especially the `form_with` helper that we see right at the top:
+```
+<%= form_with(model: article, local: true) do |form| %>
+```
+We see here that it is passed the `model` argument, which here is set to `article`. Now to know exactly what article is passed, we need to follow a bit of a long route from controller through a few views, so bear with me here, but in the end it will actually be pretty clear.
+
+So let's say we are creating a new article object, like we did above. In that case, we navigate to the `new` view which will in the controller create a new empty `Article` object with `@article = Article.new`. Earlier on, we looked at the `create` action to see that that is where the actual object is saved, but it is through the `new` action that the **form** will know what kind of action to run! In the `new` view, we see that the instance variable `@article` is passed to the form through the `render` helper as `article = @article` like below:
+```
+<%= render 'form', article: @article %>
+```
+This will then be loaded in the form with the `form_with` helper, where it will identify this object as an **empty** object (since all its values will be set to `nil`), and that's how it will know it will have to subsequently call upon the `create` action in the controller, instead of the `update` action!
+
+If you follow the same reasoning through the `edit.html.erb`view, you will see that it is passed the existing object from which you navigate to that page, and that's how it recognizes an existing object and runs the `update` function after that!
+
+
+I realize this is a lot that's happening in the background. And frankly, that's something you will run into with every framework you will use. In reality, these technologies help us do a lot of things, and are so packed with functionalities that sometimes it can be a bit daunting. I am learning new things even while writing this workshop out for you guys. But at the same time, you will also realize what a blessing these can be!
+
 Now I think we've gone over quite some functionality of the gritty code, that's why I'd like to take a break from this to let it settle and go over some frontend options for a RoR project.
 
 ### Step 6: The layouts, RubyGems and our own partials
@@ -415,10 +434,6 @@ Load up our page, and we see our image. Only, it's quite big for my liking... Th
 
 I'd suggest you make your own header now, and maybe try to add your own image to it as well with the tricks we've learned. For those that want to add some more functionality to it, maybe consider adding some `link_to` tags like we saw on our `index.html.erb` file. Maybe one that redirects to our home page, and one for adding a new article?
 
-Lastly, you can also consider making partials out of your footer and header files, to keep them more cleanly separated. If you add all your respective code to partial files in your `layouts` directory, you can render them with the following erb tag in your main layout file: `<%= render 'layouts/filename' %>`. 
-
-Don't forget to add the underscore at the start of your partial file!
-
 #### The CSS files
 
 In a minute I want to guide you through adding Bootstrap to our project so you can go ahead and add some nice, basic styling to our pages on the go. But if you're a true frontender, or you prefer doing all the hard work yourself (because if you want something done, you are best doing it yourself), you also need to know where to find the CSS files. 
@@ -445,4 +460,16 @@ Once you have added all this, I want to give you a small styling assignment:
 - Go back to our form partial `_form.html.erb` and add the basic bootstrap styling there.
 - Go nuts with your own additions! Remember that you also have a header and a footer that can use a bit of styling
 
-### 
+#### Making partials 
+
+Lastly, you can also make partials out of your footer and header files, to keep them more cleanly separated. If you add all your respective code to partial files in your `layouts` directory, you can render them with the following erb tag in your main layout file: `<%= render 'layouts/filename' %>`. And with the layout we have for our articles in the form of cards, you can also make a partial file for that in the form of `_article.html.erb`. For more information on partials and rendering, follow the documentation here:
+
+https://guides.rubyonrails.org/layouts_and_rendering.html#using-partials
+
+Don't forget to add the underscore at the start of your partial file!
+
+### Step 7: Rounding up the RESTful Routes: edit, update, destroy
+
+#### Edit & update
+
+Earlier on, we saw how the `new` action or method in our controller was empty; its only functionality was to load
