@@ -327,9 +327,33 @@ Under `app/views/articles`, you will see a whole lot of generated view files in 
 So the first line of code we see, is a <p> block with our first embedded ruby block stating ` <%= notice %> `. As you see here, the ERB blocks are opened and closes with a `<%` and `%>`, but what is the equals sign `=` doing there? Well in ERB, if you do not have the `<%=` equals sign, then the code block will be hidden. If it is there, everything that comes in between the ERB block will be output to your webpage. In this case, if there is a notice parameter, then it will be displayed. 
 What could the use be for this line? This line is used to add flash messages that can confirm certain actions or pop up errors. We will see more on those further in. 
 
-A bit below, we see the start of the table with a `<thead>`, and below we see the `<tbody>` being opened and another erb statement. But this time, it is not output to the webpage; it is kept hidden. We see the `@articles` return, from our index action in the controller. Remember what it did there? It called `Article.all` and stored it in this variable. So in reality, we have an array with objects in it, on which we can call the usual property methods, which is done right here. We open up a `.each`, and for each article, we will create a table row and output the title and body, along with 3 links that will redirect to other pages or actions concerning this article. Those links follow the `link_to` format which takes a string first that will be shown as the link, and then a route parameter and optional methods to be called on there.  In that way, we create a show, edit and destroy link for each article.
+A bit below, we see the start of the table with a `<thead>`, and below we see the `<tbody>` being opened and another erb statement. But this time, it is not output to the webpage; it is kept hidden. We see the `@articles` return, from our index action in the controller. Remember what it did there? It called `Article.all` and stored it in this variable. So in reality, we have an array with objects in it, on which we can call the usual property methods, which is done right here. We open up a `.each`, and for each article, we will create a table row and output the title and body, along with 3 links that will redirect to other pages or actions concerning this article. How are those links set up?
 
-At the bottom we see yet another `link_to`, this time to create a new article. If we click that one, we'll get redirected to http://localhost:3000/articles/new, let's go there!
+###### the link_to helper method & x_path routing
+
+Those links follow the [link_to](https://www.rubyguides.com/2019/05/rails-link_to-method/) method which takes a string first that will be shown as the link, and then a route parameter and optional methods to be called on there.  In that way, we create a show, edit and destroy link for each article.
+
+At the bottom we see yet another `link_to`, this time to create a new article. If we click that one, we'll get redirected to http://localhost:3000/articles/new. We'll go there in a second, but first let's look at how he does this exactly:
+```
+<%= link_to 'New Article', new_article_path %>
+```
+We see here that the route argument passed comes in the form of something pretty self-explanatory, and if we look at the edit option above it is quite similar... But how the hell does Rails know this, and is this applicable to all the models we will use in the future? 
+
+Actually, this is exactly what it does, and it is all through the routing we set up earlier in our `routes.rb` file. Through the creating of a 'resourceful' route with `resources :articles`, we tell Rails to identify `article` and link some helper methods to it. In case of articles, these are:
+
+- articles_path returns /articles
+- new_article_path returns /articles/new
+- edit_article_path(:id) returns /articles/:id/edit 
+- article_path(article) returns /articles/:id 
+
+For the last case, Rails will identify the foreign key for the passed object argument and use it. Conventionally, this is the :id.
+
+I understand by now you might be thinking: how do you remember all of this? Well of course, this is something you will get used to quite easily, and in general will make your life a whole lot more bearable. All of this code is very readable as well, and highlights why Ruby and Ruby on Rails is so loved by a lot of developers. 
+
+Remember that frameworks are forever growing and kept up to date, so the ease of working with them comes with a price of a lot of practice. But at the same time, so much of the functionality will save you loads of time, so it's all caught up after the learning process! 
+
+Let's move on to the next bit by actually clicking on the link we've talked about now, and navigate to the 'New Article' page!
+
 
 ##### Forms and partials
 
@@ -468,8 +492,11 @@ https://guides.rubyonrails.org/layouts_and_rendering.html#using-partials
 
 Don't forget to add the underscore at the start of your partial file!
 
-### Step 7: Rounding up the RESTful Routes: edit, update, destroy
+### Step 7: Rounding up the RESTful Routes: destroy
 
-#### Edit & update
 
-Earlier on, we saw how the `new` action or method in our controller was empty; its only functionality was to load
+### Step 8: Adding to an existing model - images & Paperclip gem
+
+### Step 9: DIY: adding Comments
+
+### Post-game step 10: Adding tags
