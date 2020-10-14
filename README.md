@@ -13,6 +13,18 @@
   - Learn about RubyGems
   - Learn about HTTP handling
   
+  ## Useful links
+  
+  - Ruby documentation
+    - https://ruby-doc.org/
+  - Ruby on Rails documentation
+    - https://guides.rubyonrails.org/
+    - https://api.rubyonrails.org/
+  - Bundler 
+    - https://bundler.io/docs.html
+  - RubyGems
+    - https://rubygems.org/
+
 
 ## The Mission
 In this workshop, I would like to guide you through the first steps of learning Ruby on Rails by building a weblog together. You will run into some familiar concepts like the MVC model, HTTP requests, routing and templates, and will also work with a virtual database that will store all the information you are adding to your web server. 
@@ -288,6 +300,8 @@ You will have to get back to this when creating your comments, which will includ
 ```
 This parameter will now specify to what our `/` route will lead. In this case, we will redirect to the `index` action of our ArticleController, and load all available articles in our database. 
 
+If you want to know more about routing in Rails, you can follow the link in the `routes.rb` file or click [here](https://guides.rubyonrails.org/routing.html) for the documentation.
+
 ### Step 5: The Views and the create/update forms
 
 We've taken a look at the controller and the routes for our index page, and we've seen that the scaffolding created a whole lot more for the other RESTful actions, but we have yet to take a look at the view files that were also created.
@@ -494,7 +508,73 @@ Don't forget to add the underscore at the start of your partial file!
 
 ### Step 7: Adding to an existing model - images & Paperclip gem
 
-http://tutorials.jumpstartlab.com/projects/blogger.html#i4:-a-few-gems
+#### Preparation
+
+Before we move on to adding a whole new model on your own, let's see how we go about modifying an existing object that we already have. I think our blog is starting to look great, but it would be even cooler if we could add pictures to our blog posts. For that, we can use a nice little gem called **paperclip** . This gem will manage our file attachments and do all the uploading for us, cool right?
+
+- Go about installing the `paperclip` gem like we did before with Bootstrap. Remember about restarting the server and the `bundle` command!
+- `paperclip` is also dependent on an application called **ImageMagick**. If you are working on a Mac OS, you can install this using the `brew install imagemagick` command. Otherwise for Windows and Unix users, follow the documentation on the following link: http://www.besavvy.com/documentation/4-5/Editor/031350_installimgk.htm
+
+#### Communicating the changes to our database
+
+*If at any moment you are not following or want to know more about migrations in Rails, consult the documentation [here](https://guides.rubyonrails.org/active_record_migrations.html#migration-overview)* 
+
+Earlier on we saw that when generating a scaffold or a model, a migration for the database is automatically created. There is however also the option to manually generate migrations using `rails generate migration migration_name`. Specifically for this case, we need to add some fields about our image to our article table for `paperclip` to work. Let's first generate the migration with :arrow_right: `rails generate migration add_paperclip_to_article`.
+
+This will generate an empty migration file:
+ ```
+class AddPaperclipToArticle < ActiveRecord::Migration
+  def change
+  end
+end
+``` 
+
+In here, there is a lot of migration specific syntax you can use to modify, add or delete rows and colums, add foreign keys, etc. For more information, consult the link provided above. But for this one specifically, we are going to have to add a few columns to the article model for paperclip specifically. In between the `change`, add the following:
+```
+    add_column :articles, :image_file_name,    :string
+    add_column :articles, :image_content_type, :string
+    add_column :articles, :image_file_size,    :integer
+    add_column :articles, :image_updated_at,   :datetime
+```
+
+After that, run our `rails db:migrate` command like we did before to have Rails go over all present migrations and update where necessary!
+
+#### Updating the model & form
+
+As of now, we haven't looked much into model of our article object. But for our image to work, we will need to add some paperclip specific lines to it.
+
+More specifically, we will need to tell the model that it will contain an attached file, and also what content types it will take. For that, open up the model and add the following lines to it:
+```
+has_attached_file :image
+validates_attachment_content_type :image, :content_type => ["image/jpg", "image/jpeg", "image/png"]
+```
+
+With the `has_attached_file` declaration, paperclip will understand that this model should accept a file attachment and that there are fields to store information about that file which start with image_ in this model’s database table. the other declaration tells paperclip that the allowed formats are `jpg`, `jpeg` and `png`.
+
+With that done, our model now knows it should contain an image, and our database has all the desired columns for our article to store it. We can now move on to adding the necessary input fields to the `form` partial. Open it up and before the `<p>` tag with the save button, add the following:
+```
+<p>
+  <%= f.label :image, "Attach an Image" %><br />
+  <%= f.file_field :image %>
+</p>
+```
+
+Going over this, we see that we add another `<label>` tag, in this case for the `:image` property of our Article model, and include the string description for it as well. And below that, we add a `<input type='file'>` which will also correspond to the same property.
+
+For those of you that have already worked with file inputs, you might know that if you want to do this in HTML, you need to specify an `enctype` property for your form, corresponding specifically to the `multipart/form-data` value. This is so that the form and the POST request made by it is able to encode whole added files to the action that is sent to.
+
+If you want to know more about this, read up on it through the following stackoverflow article: https://stackoverflow.com/questions/4526273/what-does-enctype-multipart-form-data-mean 
+
+Let's also not forget to add a line to our `show` that will render the image that is saved within our `Article` object. Open up your show (or your `_article` partial if you created one) and add `<p><%= image_tag @article.image.url %></p>` wherever you wish.
+
+
+Now go on ahead and open up the `new` view and try making a new article with an image. When you submit this, what happens?
+
+##### The importance of params
+
+##### A note on styling the image
+
+Since we've added bootstrap earlier, you co
 
 ### Step 8: DIY: adding Comments
 
