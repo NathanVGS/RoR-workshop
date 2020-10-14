@@ -492,11 +492,27 @@ https://guides.rubyonrails.org/layouts_and_rendering.html#using-partials
 
 Don't forget to add the underscore at the start of your partial file!
 
-### Step 7: Rounding up the RESTful Routes: destroy
+### Step 7: Adding to an existing model - images & Paperclip gem
 
+http://tutorials.jumpstartlab.com/projects/blogger.html#i4:-a-few-gems
 
-### Step 8: Adding to an existing model - images & Paperclip gem
+### Step 8: DIY: adding Comments
 
-### Step 9: DIY: adding Comments
+Before you start, think about what a comment will look like and what properties it has... A typical comment:
+- is attached to an article
+- has an author name
+- has a body
 
-### Post-game step 10: Adding tags
+Note that it will have a relationship with the Article object we created, and that relationship will have to be set up in the database as well.
+
+#### Generating the model
+
+Generate the Comments model with the properties we specified above. Make sure you define the correct type for your database to store it in.
+
+references!! 
+
+You can use the `rails generate model Comment` command which you will follow with the properties like we did when generating the Article model with the scaffold, and also add the reference argument to it with `article:references`.
+
+Run the migration
+
+### Post-game step 9: Adding tags
