@@ -466,7 +466,7 @@ There's our DOCTYPE and all the other essentials! But what is this file exactly?
 
 Let's try that out by adding a footer with 'BeCode.org © 2020' in it, and the BeCode logo that you can find in this repository. But where do we save that image? Well, if you remember our file structure, then you know that there is the `assets` directory under `/app` which contains the `images` directory. Save it there, and we'll use Rails magic to call upon it in our views!
 
-Once it's saved there and you made our footer, let us forget about the standard `<img>` tag and use the rails `<%=image_tag("imagename.extension")%>`. This bad boy will always look in your `assets/images` folder for any reference you make, so no need to go and add a complex path to our `src` in a basic image tag!
+Once it's saved there and you made our footer, let us forget about the standard `<img>` tag and use the rails `<%=image_tag("imagename.extension")%>` (look into the documentation on [image_tag](https://apidock.com/rails/ActionView/Helpers/AssetTagHelper/image_tag)). This bad boy will always look in your `assets/images` folder for any reference you make, so no need to go and add a complex path to our `src` in a basic image tag!
 
 Load up our page, and we see our image. Only, it's quite big for my liking... That we can also fix, by adding properties to our `image_tag`. We can opt to add a class, like `<%=image_tag("Flower.jpg", :class => 'image_style')%>` and then add styling in our stylesheet, or we can opt to add the style property itself like `<%=image_tag("Flower.jpg", :style => 'max-width: 5%; height: auto')%>` and style inline. If you add the last option right now, it should turn out OK, especially for a backend person like me.
 
@@ -476,7 +476,9 @@ I'd suggest you make your own header now, and maybe try to add your own image to
 
 In a minute I want to guide you through adding Bootstrap to our project so you can go ahead and add some nice, basic styling to our pages on the go. But if you're a true frontender, or you prefer doing all the hard work yourself (because if you want something done, you are best doing it yourself), you also need to know where to find the CSS files. 
 
-Navigate our directories again to that same `assets` directory and this time open `assets/stylesheets`. Here you'll find a few files. First of all we've got the `application.scss` file, which just like our `application.html.erb` will form the base of your ultimately compiled file of all other present stylesheets. Notice that these files automatically come in the SCSS format; Rails is generated with the `gem 'sass-rails', '>= 6'` gem which allows SCSS formatting without any configuration.
+Navigate our directories again to that same `assets` directory and this time open `assets/stylesheets`. Here you'll find a few files. First of all we've got the `application.scss` file, which just like our `application.html.erb` will form the base of your ultimately compiled file of all other present stylesheets. Open it up and you should see two commands: ` *= require_tree` & `*= require_self`. The `require_tree` states that any stylesheet we add to this directory will be loaded and compiled into the ultimate `application.css` file. So this allows you to add any stylesheets you want of your own to this directory, and it works without you having to add any of your own `stylesheet` tags! *You can try this out with the styling exercise later on.*
+
+Notice that these files automatically come in the SCSS format; Rails is generated with the `gem 'sass-rails', '>= 6'` gem which allows SCSS formatting without any configuration.
 
 In this 'mother' file, you can add styling too, and it will end up at the bottom of the compiled file. If you remember CSS rules, that means they will override any other stylings applied above them. This directory also holds stylesheets for your generated models, which will add styling to those respective views.
 
@@ -577,9 +579,15 @@ Now go on ahead and open up the `new` view and try making a new article with an 
 
 ##### The importance of params
 
+If everything turned out the way it should, we should see the image right now... But in my case, and probably yours too, I only get to see the usual 'broken image' icon. This is rendered through Rails' `image_tag` if there's no image to be rendered. That means, our image didn't save, but why?
+
+Well if you look at our form, we see that we now pass an `:image` argument to our controller through the `params` hash we talked about (think $\_REQUEST[] array). That's all good, but remember how Rails had an extra layer of permitted and required arguments? We will need to add our `:image` there too! Go have a look and if you don't remember this step perfectly, go back to **Step 5 > forms and partials** to refresh your memory.
+
+Once this is added, try making a new article and see if it works now!
+
 ##### A note on styling the image
 
-Since we've added bootstrap earlier, you co
+We've all struggled with images coming in all shapes and sizes, so maybe we should consider styling this image as well. Since we've added bootstrap earlier, you can consider using inline styling by adding classes to the `image_tag`, like we did before for the BeCode logo.
 
 ### Step 8: DIY: adding Comments
 
@@ -588,16 +596,43 @@ Before you start, think about what a comment will look like and what properties 
 - has an author name
 - has a body
 
-Note that it will have a relationship with the Article object we created, and that relationship will have to be set up in the database as well.
-
 #### Generating the model
 
-Generate the Comments model with the properties we specified above. Make sure you define the correct type for your database to store it in.
+Note that it will have a relationship with the Article object we created, and that relationship will have to be set up in the database as well. this is done through establishing `references` between `Article` and the new `Comment` model.
 
-references!! 
+- Generate the Comments model with the properties we specified above. Make sure you define the correct type for your database to store it in. You can use the `rails generate model Comment` command which you will follow with the properties like we did when generating the Article model with the scaffold, and also add the reference argument to it with `article:references`.
 
-You can use the `rails generate model Comment` command which you will follow with the properties like we did when generating the Article model with the scaffold, and also add the reference argument to it with `article:references`.
+If you open up the migration, it should look mostly familiar:
+``` 
+  def change
+    create_table :comments do |t|
+      t.string :author
+      t.text :body
+      t.references :article, null: false, foreign_key: true
 
-Run the migration
+      t.timestamps
+    end
+  end
+  ```
+The only new thing is the `t.references :article, null: false, foreign_key: true` line. The one thing that does ring a bell is **foreign key**; in general we would establish this relation between comment and article by adding a `article_id` property to our comment, so we and our database know what article it belongs to. Well, in short, that's exactly what this does. It takes the **conventional** foreign key of `article`, being its id, and adds it to the comment table. Reasonable, right?
 
-### Post-game step 9: Adding tags
+Go ahead and run the migration now so we can move on to the next steps.
+
+#### Database relations
+
+- Look into how relationships are set up in Rails through the following link: https://guides.rubyonrails.org/association_basics.html
+- Relationships will be defined in the objects' models
+
+#### Adding comments to our show view
+
+- Create a `_comment` partial using the properties that we added to the comments and display them how you like it. For example, you could have a wrapper `div` with `<h4>Comment by <%= comment.author %></h4>`, and then with the body of the comment below it, and you could consider using the automatically included `created_at` property as well.
+- Render the partial in your `show.html.erb` using `<%= render partial: 'articles/comment', collection: @article.comments %>`. This is the `render` we are used to, but the `collection` parameter will tell it to render the partial **for each** element found in the `@article.comments` array.
+
+#### The comment form
+
+
+
+### Nice to have extras
+
+- If an article doesn't have an image attached, it loads this ugly 'broken image' icon. If you don't like this, you can look into inline `erb` if statements to only display the `image_tag` if the image.url of your article is not equal to `/images/original/missing.png`
+- For those of you that love databases and relations, try adding tags to your articles by which you can sort and identify your articles. You can follow the guide on the following page for more on this: http://tutorials.jumpstartlab.com/projects/blogger.html#i3:-tagging 
