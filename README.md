@@ -675,7 +675,7 @@ With this done, you have finished all of the required assignments I meant for ou
 
 Thank you for participating and feel free to ask any questions!
 
-![star](star.png)
+![star](star.jpg)
 
 ## APPENDIX - Nice to have extras
 
