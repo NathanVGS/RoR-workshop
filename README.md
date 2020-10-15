@@ -630,6 +630,46 @@ Go ahead and run the migration now so we can move on to the next steps.
 
 #### The comment form
 
+- Create a new `/comments` directory within your `app/views/`
+- Create a new `_form.html.erb` file within there
+- Add a `render` ERB tag with the path being equal to `comments/form`
+
+We are adding to our `Article`'s `show` action now, but in our controller, this action is not yet aware of any comments being part of it. If we intend to use the `form_for` tag like we discussed earlier ([documentation](https://apidock.com/rails/ActionView/Helpers/FormHelper/form_for)), our action needs to be aware of the model in order to know what properties it has.
+
+- Navigate to the `show` action of your `articles_controller` and add: 
+  ```
+  @comment = Comment.new
+  @comment.article_id = @article.id
+  ```
+- After this, build up your form partial with the following `form_for` tag as opener: `<%= form_for [ @article, @comment ] do |form| %>`
+  - You can model it largely to the partial for the `article` form!
+
+If you try to load your page now, you should get an error regarding:
+```
+NoMethodError in Articles#show
+Showing app/views/comments/_form.html.erb where line #3 raised:
+undefined method `article_comments_path' for #<ActionView::Base:0x10446e510>
+```
+Look at that last line. Rails is trying to navigate to a resourceful route, but have we actually specified anything for our comments so far in `routes.rb`?
+
+#### Resourceful routing our comments
+
+- Open up your `routes.rb` and add your resourceful routing. Be careful though: we are dealing with two models now that have a relationship to each other. Look into how to handle this here: https://guides.rubyonrails.org/routing.html#nested-resources
+
+#### Comments Controller
+
+- As we saw earlier on, when an empty object is passed to the `form_for` helper it will try to execute the corresponding `create` action for the model when it is submitted. This would be found in our `comments_controller`, but since we didn't use `scaffold` we do not have one yet. Generate one using `rails generate controller comments`
+
+- Model this controller to by adding the necessary `comments_params` action and the `create` action.
+ - The create action can also follow some of the logic in the `articles#create` action
+ - start it of by instantiating your instance variable `@comments` and making it equal to a new `Comment` object with the `comments_params` as an argument.
+ - In this specific case, we will also have to manually assign the `article_id` foreign key based on the `@article` we are working in right now. This can be done through the general `params` hash, with the following line
+  - `  @comment.article_id = params[:article_id]`
+ - Don't forget to save the comment! You do not need to follow the extensive structure from `articles_controller`. Instead use the one we used in the console line :arrow_right: `@comments.save`
+ 
+ - Redirect to the article's `show` page using `redirect_to article_path(@comment.article)`
+ 
+ Try out our new form now. Look at all the magic happening!
 
 
 ### Nice to have extras
