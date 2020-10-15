@@ -669,10 +669,18 @@ Look at that last line. Rails is trying to navigate to a resourceful route, but 
  
  - Redirect to the article's `show` page using `redirect_to article_path(@comment.article)`
  
- Try out our new form now. Look at all the magic happening!
+Try out our new form now. Look at all the magic happening!
 
+With this done, you have finished all of the required assignments I meant for our little workshop this afternoon. Congratulations! I hope you enjoyed this taste of what Rails, and other frameworks in general, can offer. For those of you that want to work a little bit more, or if you finished early (looking at you, Huyen), you can continue on with the appendix below!
 
-### Nice to have extras
+Thank you for participating and feel free to ask any questions!
+
+![star](https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.techradar.com%2Freviews%2Fsuper-mario-3d-all-stars&psig=AOvVaw0vHj82QoVTOXoI-UISbUWW&ust=1602848862249000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCOjWzL7DtuwCFQAAAAAdAAAAABAl)
+
+## APPENDIX - Nice to have extras
+
+- Consider adding the time difference between the time a comment is posted and the time an article was posted using `distance_of_time_in_words` [link](https://apidock.com/rails/ActionView/Helpers/DateHelper/distance_of_time_in_words)
 
 - If an article doesn't have an image attached, it loads this ugly 'broken image' icon. If you don't like this, you can look into inline `erb` if statements to only display the `image_tag` if the image.url of your article is not equal to `/images/original/missing.png`
+
 - For those of you that love databases and relations, try adding tags to your articles by which you can sort and identify your articles. You can follow the guide on the following page for more on this: http://tutorials.jumpstartlab.com/projects/blogger.html#i3:-tagging 
