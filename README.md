@@ -675,7 +675,7 @@ With this done, you have finished all of the required assignments I meant for ou
 
 Thank you for participating and feel free to ask any questions!
 
-![star](https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.techradar.com%2Freviews%2Fsuper-mario-3d-all-stars&psig=AOvVaw0vHj82QoVTOXoI-UISbUWW&ust=1602848862249000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCOjWzL7DtuwCFQAAAAAdAAAAABAl)
+![star](star.png)
 
 ## APPENDIX - Nice to have extras
 
