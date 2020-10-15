@@ -554,14 +554,19 @@ With the `has_attached_file` declaration, paperclip will understand that this mo
 With that done, our model now knows it should contain an image, and our database has all the desired columns for our article to store it. We can now move on to adding the necessary input fields to the `form` partial. Open it up and before the `<p>` tag with the save button, add the following:
 ```
 <p>
-  <%= f.label :image, "Attach an Image" %><br />
-  <%= f.file_field :image %>
+  <%= form.label :image, "Attach an Image" %><br />
+  <%= form.file_field :image %>
 </p>
 ```
 
 Going over this, we see that we add another `<label>` tag, in this case for the `:image` property of our Article model, and include the string description for it as well. And below that, we add a `<input type='file'>` which will also correspond to the same property.
 
 For those of you that have already worked with file inputs, you might know that if you want to do this in HTML, you need to specify an `enctype` property for your form, corresponding specifically to the `multipart/form-data` value. This is so that the form and the POST request made by it is able to encode whole added files to the action that is sent to.
+
+So in short, we need to add that to our `form_with` helper, which takes an `:html` argument through which we can pass this. Change your form tag at the top to:
+```
+<%= form_for(@article, html: {multipart: true}) do |form| %>
+```
 
 If you want to know more about this, read up on it through the following stackoverflow article: https://stackoverflow.com/questions/4526273/what-does-enctype-multipart-form-data-mean 
 
